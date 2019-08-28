@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const WishlistList = ({ state, actions }) => {
   return (
@@ -18,64 +18,45 @@ const WishlistList = ({ state, actions }) => {
   );
 };
 
-class Wishlist extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: -1,
-      name: "",
-      products: []
-    };
+const useInput = initialValue => {
+  const [value, setValue] = useState(initialValue);
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.getState = this.getState.bind(this);
-  }
+  return {
+    value,
+    setValue,
+    reset: () => setValue(""),
+    bind: {
+      value,
+      onChange: event => {
+        setValue(event.target.value);
+      }
+    }
+  };
+};
 
-  componentDidMount() {
-    this.setState(this.props.wishlist);
-  }
+const Wishlist = props => {
+  const name = useInput(props.wishlist.name || "");
+  const id = useInput(props.wishlist.id);
 
-  componentWillReceiveProps(prevProps) {
-    this.setState(this.props.wishlist);
-  }
+  useEffect(() => {
+    id.setValue(props.wishlist.id);
+  }, [props.wishlist]);
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
-  getState() {
-    return this.state;
-  }
-
-  handleSubmit(e) {
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.getState);
-  }
+    props.onSubmit({ id: id.value, name: name.value });
+  };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input hidden name="id" value={this.state.id} />
-        <label>
-          name:
-          <input
-            name="name"
-            type="text"
-            value={this.state.name}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <input type="submit" />
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" {...id.bind} hidden />
+      <label>
+        name:
+        <input type="text" {...name.bind} />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+  );
+};
 
 export default WishlistList;

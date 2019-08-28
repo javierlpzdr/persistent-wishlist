@@ -2,38 +2,67 @@ import { call } from "redux-saga/effects";
 import { expectSaga } from "redux-saga-test-plan";
 import * as sagas from "./wishlist";
 import * as actions from "../actions/index";
+import reducer from "../reducers/index";
 
-describe("Test delay function", () => {
-  const delay = sagas.delay();
+jest.setTimeout(30000);
+expectSaga.DEFAULT_TIMEOUT = 10000; // set it to 500ms
 
-  test("should start with 0, wait 2000ms, afterwards  and increment 1", async () => {
-    await expect(delay(2000)).resolves.toBe(0);
-    await expect(delay(2000)).resolves.toBe(1);
+describe("Tests create wishlist", () => {
+  it("should add a new wishlist and update it with a generated id", () => {
+    return expectSaga(sagas.watchAddWishlistAsync)
+      .withReducer(reducer)
+      .dispatch(actions.addWishlistAsync())
+      .dispatch(
+        actions.updateWishlistAsync(
+          {
+            id: -1,
+            name: "kitchen",
+            products: []
+          },
+          0
+        )
+      )
+      .hasFinalState({
+        wishlists: [
+          {
+            id: 2,
+            name: "kitchen",
+            products: []
+          }
+        ]
+      })
+      .run();
   });
-});
 
-/*
-expectSaga(sagas.watchAddWishlistAsync)
-.dispatch(actions.addWishlistAsync())
-.hasFinalState({
-  id: -1,
-  name: "",
-  products: []
-});
-*/
-
-describe("updates a wishlist in server", () => {
-  const payload = {
-    id: 0,
-    name: "asdfasdfa",
-    products: []
-  };
-
-  const generator = sagas.updateWishlistAsync(payload);
-
-  it("should update wishlist on server and update it on state", () => {
-    expect(generator.next().value).toEqual(
-      call(actions.updateWishlist, payload)
-    );
+  it("shoud add 2 new wishlists and update the first item", () => {
+    return expectSaga(sagas.watchAddWishlistAsync)
+      .withReducer(reducer)
+      .dispatch(actions.addWishlistAsync())
+      .dispatch(actions.addWishlistAsync())
+      .dispatch(
+        actions.updateWishlistAsync(
+          {
+            id: -1,
+            name: "kitchen",
+            products: []
+          },
+          0
+        )
+      )
+      .hasFinalState({
+        wishlists: [
+          {
+            id: 3,
+            name: "kitchen",
+            products: []
+          },
+          {
+            id: 4,
+            name: "",
+            products: []
+          }
+        ]
+      })
+      .run();
   });
 });

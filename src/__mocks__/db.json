@@ -1,0 +1,14 @@
+{
+  "wishlists": [
+    {
+      "id": 1,
+      "name": "Wedding",
+      "products": []
+    },
+    {
+      "id": 2,
+      "name": "Office",
+      "products": []
+    }
+  ]
+}
