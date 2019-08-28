@@ -1,4 +1,4 @@
-# Persistent wishlists &middot;
+# Persistent wishlists
 
 The project implements a use case in which a user adds new wishlist to their profile. Instead of waiting for the new ID to come from the server to editing, we want to add a temporary ID (-1). If we add a new name change, we will send a PATCH request and if everything works correctly, we wil get all the changes.
 
@@ -8,7 +8,7 @@ I add the ability to edit different wishlists at same time keeping the changes w
 
 ## Getting started
 
-We've got a test group to run and a prototype to interact with the buttons. Each test is focused on one application layer. The interactive prototype uses a mock api stored in /src/**MOCKS**/db.json.
+We've got a test group to run and a prototype to interact with the buttons. Each test is focused on one application layer. The interactive prototype uses a mock api stored in /src/__MOCKS__/db.json.
 
 ## Installation
 
