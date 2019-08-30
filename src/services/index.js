@@ -19,7 +19,6 @@ export const wishlists = {
       services.WISHLISTS + payload.id,
       payload
     );
-
     return response.data;
   }
 };

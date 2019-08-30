@@ -1,12 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 const AddWishlist = ({ actions }) => {
-  return (
-    <Fragment>
-      <button onClick={() => actions.addWishlist()}>Add</button>
-      <button onClick={() => actions.addWishlistAsync()}>Add Async</button>
-    </Fragment>
-  );
+  return <button onClick={() => actions.addWishlistAsync()}>Add</button>;
 };
 
 export default AddWishlist;

@@ -19,22 +19,30 @@ const getWishlists = state => state.wishlists;
  * Afterwards it's updated on store
  */
 export function* addWishlistAsync() {
-  const id = yield call(services.wishlists.create);
-  yield put(actions.saveWishlist(id));
+  try {
+    const id = yield call(services.wishlists.create);
+    debugger;
+    yield put(actions.saveWishlist(id));
+  } catch (error) {
+    console.error(error);
+    return;
+  }
 }
 
 /**
  * Update Wishlist on store and server
- * @param {Object} payload Data to update
+ * @param {Object} payload   Data to update
  */
 export function* updateWishlistAsync(payload) {
   // Update wishlist in store
   yield put(actions.updateWishlist(payload));
 
-  debugger;
-
   // Request api to update wishlist on server
-  yield call(services.wishlists.update, payload);
+  try {
+    yield call(services.wishlists.update, payload);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
@@ -78,7 +86,11 @@ export function* watchAddWishlistAsync(action) {
 
       if (payload.id === -1) {
         const wishlists = yield select(getWishlists);
-        debugger;
+
+        if (wishlists[index].id === -1) {
+          return;
+        }
+
         payload.id = wishlists[index].id;
       }
 

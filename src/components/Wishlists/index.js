@@ -1,4 +1,4 @@
-import WishlistListContainer from "./Wishlists";
+import Wishlists from "./Wishlists";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as wishlistActions from "../../actions";
@@ -14,4 +14,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WishlistListContainer);
+)(Wishlists);

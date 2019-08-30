@@ -1,62 +1,70 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const WishlistList = ({ state, actions }) => {
+const Wishlists = ({ state, actions }) => {
   return (
-    <ul>
-      {state.wishlists &&
-        state.wishlists.map((wishlist, i) => (
-          <li key={i}>
-            <Wishlist
-              wishlist={wishlist}
-              onSubmit={data => {
-                actions.updateWishlistAsync(data, i);
-              }}
-            />
-          </li>
-        ))}
-    </ul>
+    <React.Fragment>
+      {state.wishlists ? (
+        <ul>
+          {state.wishlists.map((wishlist, i) => (
+            <li key={i}>
+              <Wishlist
+                wishlist={wishlist}
+                onSubmit={data => {
+                  actions.updateWishlistAsync(data, i);
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <h2>{"List is empty"}</h2>
+      )}
+    </React.Fragment>
   );
 };
 
-const useInput = initialValue => {
-  const [value, setValue] = useState(initialValue);
+const useForm = (initialState, callback) => {
+  const [values, setValues] = useState(initialState);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    callback(values);
+  };
+
+  const handleChange = e => {
+    e.persist();
+
+    setValues(values => ({ ...values, [e.target.name]: e.target.value }));
+  };
 
   return {
-    value,
-    setValue,
-    reset: () => setValue(""),
-    bind: {
-      value,
-      onChange: event => {
-        setValue(event.target.value);
-      }
-    }
+    values,
+    handleChange,
+    handleSubmit
   };
 };
 
 const Wishlist = props => {
-  const name = useInput(props.wishlist.name || "");
-  const id = useInput(props.wishlist.id);
-
-  useEffect(() => {
-    id.setValue(props.wishlist.id);
-  }, [props.wishlist]);
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    props.onSubmit({ id: id.value, name: name.value });
-  };
+  const { values, handleChange, handleSubmit } = useForm(
+    props.wishlist,
+    props.onSubmit
+  );
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" {...id.bind} hidden />
+      <input type="text" name="id" readOnly value={values.id} hidden />
       <label>
         name:
-        <input type="text" {...name.bind} />
+        <input
+          type="text"
+          name="name"
+          value={values.name}
+          onChange={handleChange}
+        />
       </label>
       <input type="submit" value="Submit" />
     </form>
   );
 };
 
-export default WishlistList;
+export default Wishlists;

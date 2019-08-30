@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 
@@ -8,19 +8,16 @@ import store from "./store";
 
 import "./styles.css";
 
-function App() {
+export default function App() {
   return (
     <div>
-      <AddWishlist />
-      <Wishlists />
+      <Provider store={store}>
+        <AddWishlist />
+        <Wishlists />
+      </Provider>
     </div>
   );
 }
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  rootElement
-);
+ReactDOM.render(<App />, rootElement || document.createElement("div"));
